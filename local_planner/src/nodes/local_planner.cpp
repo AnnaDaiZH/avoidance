@@ -432,6 +432,17 @@ void LocalPlanner::reprojectPoints(Histogram histogram) {
         p_pol[3].e -= half_res;
         p_pol[3].z -= half_res;
 
+        p_pol[0].e = beta_e + half_res;
+        p_pol[0].z = beta_z + half_res;
+        p_pol[1].e = beta_e - half_res;
+        p_pol[1].z = beta_z + half_res;
+        p_pol[2].e = beta_e + half_res;
+        p_pol[2].z = beta_z - half_res;
+        p_pol[3].e = beta_e - half_res;
+        p_pol[3].z = beta_z - half_res;
+        for(auto& i : p_pol){
+          i.r = histogram.get_dist(e,z);
+        }
         // transform from Polar to Cartesian
         temp_array[0] = polarToCartesian(p_pol[0], toPoint(position_old_));
         temp_array[1] = polarToCartesian(p_pol[1], toPoint(position_old_));

@@ -22,6 +22,11 @@ TEST(Common, polar2DdistanceOnKnownPoints) {
   PolarPoint p1(5.0f, 9.0f, 0.0f);
   PolarPoint p2(50.0f, 39.0f, 0.0f);
 
+  p1.e = 5.0;
+  p1.z = 9.0;
+  p2.e = 50.0;
+  p2.z = 39.0;
+
   // WHEN: we get the distance between the same points
   float dist = distance2DPolar(p1, p2);
 
