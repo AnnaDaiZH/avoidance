@@ -353,7 +353,7 @@ void LocalPlannerNode::initMarker(visualization_msgs::MarkerArray* marker,
   m.lifetime = ros::Duration();
   m.id = 0;
   marker->markers.push_back(m);
-  
+
   geometry_msgs::PoseStamped drone_pos = local_planner_->getPosition();
 
   for (size_t i = 0; i < path.cells.size(); i++) {

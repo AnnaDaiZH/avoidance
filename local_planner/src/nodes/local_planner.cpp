@@ -123,6 +123,7 @@ void LocalPlanner::runPlanner() {
   // visualization of FOV in RViz
   initGridCells(FOV_cells_);
   geometry_msgs::Point p;
+  PolarPoint p_pol = {};
   for (int j = e_FOV_min_; j <= e_FOV_max_; j++) {
     for (size_t i = 0; i < z_FOV_idx_.size(); i++) {
       PolarPoint p_pol =
@@ -432,17 +433,18 @@ void LocalPlanner::reprojectPoints(Histogram histogram) {
         p_pol[3].e -= half_res;
         p_pol[3].z -= half_res;
 
-        p_pol[0].e = beta_e + half_res;
-        p_pol[0].z = beta_z + half_res;
-        p_pol[1].e = beta_e - half_res;
-        p_pol[1].z = beta_z + half_res;
-        p_pol[2].e = beta_e + half_res;
-        p_pol[2].z = beta_z - half_res;
-        p_pol[3].e = beta_e - half_res;
-        p_pol[3].z = beta_z - half_res;
-        for(auto& i : p_pol){
-          i.r = histogram.get_dist(e,z);
-        }
+        // float beta_e = elevationIndexToAngle(e, ALPHA_RES);
+        // float beta_z = azimuthIndexToAngle(z, ALPHA_RES);
+
+        p_pol[0].e += half_res;
+        p_pol[0].z += half_res;
+        p_pol[1].e -= half_res;
+        p_pol[1].z += half_res;
+        p_pol[2].e += half_res;
+        p_pol[2].z -= half_res;
+        p_pol[3].e -= half_res;
+        p_pol[3].z -= half_res;
+
         // transform from Polar to Cartesian
         temp_array[0] = polarToCartesian(p_pol[0], toPoint(position_old_));
         temp_array[1] = polarToCartesian(p_pol[1], toPoint(position_old_));
