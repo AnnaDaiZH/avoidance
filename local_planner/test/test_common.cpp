@@ -131,103 +131,62 @@ TEST(Common, elevationAnglefromCartesian) {
   EXPECT_FLOAT_EQ(-50.194428, angle_non_zero_origin);
 }
 
-TEST(Common, elevationAngletoIndex) {
-  // GIVEN: the elevation angle of a point and the histogram resolution
-  PolarPoint p_pol_1 = {};
-  p_pol_1.e = 0.f;
-  PolarPoint p_pol_2 = {};
-  p_pol_2.e = 34.f;
-  PolarPoint p_pol_3 = {};
-  p_pol_3.e = 90.f;
-  PolarPoint p_pol_4 = {};
-  p_pol_4.e = -90.f;
-  const float resolution_1 = 3.f;
-  const float resolution_2 = 12.f;
-  PolarPoint p_pol_invalid_1 = {};
-  p_pol_invalid_1.e = 94.f;
-  PolarPoint p_pol_invalid_2 = {};
-  p_pol_invalid_2.e = -999.f;
-  const float resolution_invalid_1 = 0.f;
-  const float resolution_invalid_2 = -1.f;
-
-  // WHEN: we convert the elevation angle to a histogram index
-  const int index_1 = polarToHistogramIndex(p_pol_1, resolution_1).y();
-  const int index_2 = polarToHistogramIndex(p_pol_2, resolution_1).y();
-  const int index_3 = polarToHistogramIndex(p_pol_1, resolution_2).y();
-  const int index_4 = polarToHistogramIndex(p_pol_2, resolution_2).y();
-  const int index_5 = polarToHistogramIndex(p_pol_3, resolution_2).y();
-  const int index_6 = polarToHistogramIndex(p_pol_4, resolution_2).y();
-  const int index_invalid_1 =
-      polarToHistogramIndex(p_pol_invalid_1, resolution_1).y();
-  const int index_invalid_2 =
-      polarToHistogramIndex(p_pol_invalid_2, resolution_1).y();
-  const int index_invalid_3 =
-      polarToHistogramIndex(p_pol_1, resolution_invalid_1).y();
-  const int index_invalid_4 =
-      polarToHistogramIndex(p_pol_1, resolution_invalid_2).y();
-
-  // THEN: the vertical histogram index should be ..
-  EXPECT_EQ(30, index_1);
-  EXPECT_EQ(41, index_2);
-  EXPECT_EQ(7, index_3);
-  EXPECT_EQ(10, index_4);
-  EXPECT_EQ(14, index_5);
-  EXPECT_EQ(0, index_6);
-  EXPECT_EQ(0, index_invalid_1);
-  EXPECT_EQ(0, index_invalid_2);
-  EXPECT_EQ(0, index_invalid_3);
-  EXPECT_EQ(0, index_invalid_4);
-}
-TEST(Common, azimuthAngletoIndex) {
-  // GIVEN: the azimuth angle of a point and the histogram resolution
+TEST(Common, polarToHistogramIndex) {
+  // GIVEN: the polar point and the histogram resolution
   PolarPoint p_pol_1 = {};
   PolarPoint p_pol_2 = {};
   PolarPoint p_pol_3 = {};
   PolarPoint p_pol_4 = {};
   PolarPoint p_pol_5 = {};
-  PolarPoint p_pol_invalid_1 = {};
-  PolarPoint p_pol_invalid_2 = {};
+  PolarPoint p_pol_6 = {};
+  p_pol_1.e = 0.f;
+  p_pol_2.e = 34.f;
+  p_pol_3.e = 90.f;
+  p_pol_4.e = -90.f;
+  p_pol_5.e = 454.f;  // wrapped around, influences the azimuth by 180 deg
+  p_pol_6.e =
+      400.f;  // wrapped around , no influence on azimuth as one full roation
+
   p_pol_1.z = 0.f;
   p_pol_2.z = 34.f;
   p_pol_3.z = 180.f;
-  p_pol_4.z = 179.f;
-  p_pol_5.z = -180.f;
+  p_pol_4.z = -180.f;
+  p_pol_5.z = -160.f;
+  p_pol_6.z = -270.f;  // wrwapped around
   const float resolution_1 = 3.f;
   const float resolution_2 = 12.f;
-  p_pol_invalid_1.z = 194.f;
-  p_pol_invalid_2.z = -999.f;
-  const float resolution_invalid_1 = 0.f;
-  const float resolution_invalid_2 = -1.f;
 
-  // WHEN: we convert the azimuth angle to a histogram index
-  const int index_1 = polarToHistogramIndex(p_pol_1, resolution_1).x();
-  const int index_2 = polarToHistogramIndex(p_pol_2, resolution_1).x();
-  const int index_3 = polarToHistogramIndex(p_pol_1, resolution_2).x();
-  const int index_4 = polarToHistogramIndex(p_pol_2, resolution_2).x();
-  const int index_5 = polarToHistogramIndex(p_pol_3, resolution_2).x();
-  const int index_6 = polarToHistogramIndex(p_pol_4, resolution_2).x();
-  const int index_7 = polarToHistogramIndex(p_pol_5, resolution_2).x();
-  const int index_invalid_1 =
-      polarToHistogramIndex(p_pol_invalid_1, resolution_1).x();
-  const int index_invalid_2 =
-      polarToHistogramIndex(p_pol_invalid_1, resolution_1).x();
-  const int index_invalid_3 =
-      polarToHistogramIndex(p_pol_1, resolution_invalid_1).x();
-  const int index_invalid_4 =
-      polarToHistogramIndex(p_pol_1, resolution_invalid_2).x();
+  // WHEN: we convert the polar point to a histogram index
+  const Eigen::Vector2i index_1 = polarToHistogramIndex(p_pol_1, resolution_1);
+  const Eigen::Vector2i index_2 = polarToHistogramIndex(p_pol_2, resolution_1);
+  const Eigen::Vector2i index_3 = polarToHistogramIndex(p_pol_1, resolution_2);
+  const Eigen::Vector2i index_4 = polarToHistogramIndex(p_pol_2, resolution_2);
+  const Eigen::Vector2i index_5 = polarToHistogramIndex(p_pol_3, resolution_2);
+  const Eigen::Vector2i index_6 = polarToHistogramIndex(p_pol_4, resolution_2);
+  const Eigen::Vector2i index_7 =
+      polarToHistogramIndex(p_pol_5, resolution_1);  // wrapped
+  const Eigen::Vector2i index_8 =
+      polarToHistogramIndex(p_pol_6, resolution_2);  // wrapped
 
-  // THEN: the horizontal histogram index should be ..
-  EXPECT_EQ(60, index_1);
-  EXPECT_EQ(71, index_2);
-  EXPECT_EQ(15, index_3);
-  EXPECT_EQ(17, index_4);
-  EXPECT_EQ(0, index_5);
-  EXPECT_EQ(29, index_6);
-  EXPECT_EQ(0, index_7);
-  EXPECT_EQ(0, index_invalid_1);
-  EXPECT_EQ(0, index_invalid_2);
-  EXPECT_EQ(0, index_invalid_3);
-  EXPECT_EQ(0, index_invalid_4);
+  // THEN: the  histogram index should be ..
+  // elevation
+  EXPECT_EQ(30, index_1.y());
+  EXPECT_EQ(41, index_2.y());
+  EXPECT_EQ(7, index_3.y());
+  EXPECT_EQ(10, index_4.y());
+  EXPECT_EQ(14, index_5.y());
+  EXPECT_EQ(0, index_6.y());
+  EXPECT_EQ(58, index_7.y());
+  EXPECT_EQ(10, index_8.y());
+  // azimuth
+  EXPECT_EQ(60, index_1.x());
+  EXPECT_EQ(71, index_2.x());
+  EXPECT_EQ(15, index_3.x());
+  EXPECT_EQ(17, index_4.x());
+  EXPECT_EQ(0, index_5.x());
+  EXPECT_EQ(0, index_6.x());
+  EXPECT_EQ(66, index_7.x());
+  EXPECT_EQ(22, index_8.x());
 }
 
 TEST(Common, polarToCartesian) {
@@ -251,12 +210,18 @@ TEST(Common, polarToCartesian) {
   // WHEN: converting the point in polar CS to cartesian CS
 
   for (int i = 0; i < n; i++) {
-    PolarPoint p_pol(e[i], z[3], radius[0]);
+    PolarPoint p_pol = {};
+    p_pol.e = e[i];
+    p_pol.z = z[3];
+    p_pol.r = radius[0];
     pos_out.push_back(polarToCartesian(p_pol, toPoint(pos)));
   }
 
   for (int i = 0; i < n; i++) {
-    PolarPoint p_pol(e[i], z[i], radius[1]);
+    PolarPoint p_pol = {};
+    p_pol.e = e[i];
+    p_pol.z = z[i];
+    p_pol.r = radius[1];
     pos_out.push_back(polarToCartesian(p_pol, toPoint(pos)));
   }
 
@@ -298,7 +263,10 @@ TEST(Common, PolarToCatesianToPolar) {
   // cartesian and back again
   for (float e = -90.f; e <= 90.f; e = e + 3.f) {
     for (float z = -180.f; z <= 180.f; z = z + 6.f) {
-      PolarPoint p_pol(e, z, radius);
+      PolarPoint p_pol = {};
+      p_pol.e = e;
+      p_pol.z = z;
+      p_pol.r = radius;
       Eigen::Vector3f p_cartesian = polarToCartesian(p_pol, toPoint(pos));
 
       PolarPoint p_pol_new = cartesianToPolar(p_cartesian, pos);

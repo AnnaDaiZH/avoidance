@@ -123,7 +123,7 @@ void LocalPlanner::runPlanner() {
   // visualization of FOV in RViz
   initGridCells(FOV_cells_);
   geometry_msgs::Point p;
-  PolarPoint p_pol = {};
+  // PolarPoint p_pol = {};
   for (int j = e_FOV_min_; j <= e_FOV_max_; j++) {
     for (size_t i = 0; i < z_FOV_idx_.size(); i++) {
       PolarPoint p_pol =
@@ -424,18 +424,6 @@ void LocalPlanner::reprojectPoints(Histogram histogram) {
           i = histogramIndexToPolar(e, z, ALPHA_RES, i.r);
         }
         // transform from array index to angle
-        p_pol[0].e += half_res;
-        p_pol[0].z += half_res;
-        p_pol[1].e -= half_res;
-        p_pol[1].z += half_res;
-        p_pol[2].e += half_res;
-        p_pol[2].z -= half_res;
-        p_pol[3].e -= half_res;
-        p_pol[3].z -= half_res;
-
-        // float beta_e = elevationIndexToAngle(e, ALPHA_RES);
-        // float beta_z = azimuthIndexToAngle(z, ALPHA_RES);
-
         p_pol[0].e += half_res;
         p_pol[0].z += half_res;
         p_pol[1].e -= half_res;

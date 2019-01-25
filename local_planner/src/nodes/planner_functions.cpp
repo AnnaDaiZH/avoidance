@@ -326,7 +326,6 @@ void findFreeDirections(
   int a = 0, b = 0;
   bool free = true;
   bool corner = false;
-  PolarPoint p_pol = {};
   geometry_msgs::Point p;
   cost_path_candidates.clear();
 
