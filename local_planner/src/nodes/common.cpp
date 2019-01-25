@@ -72,7 +72,6 @@ Eigen::Vector2i polarToHistogramIndex(const PolarPoint& p_pol, int res) {
 }
 
 PolarPoint wrapPolar(PolarPoint p_pol) {
-  PolarPoint p_wrapped = {};
   // elevation valid [-90,90)
   // when abs(elevation) > 90, wrap elevation angle
   //  azimuth changes for 180 each time
@@ -85,10 +84,9 @@ PolarPoint wrapPolar(PolarPoint p_pol) {
       p_pol.z = p_pol.z + 180.0f;
     }
   }
-  p_wrapped.e = p_pol.e;
-  p_wrapped.z = p_pol.z;
+  PolarPoint p_wrapped(p_pol.e, p_pol.z, 0.0f);
   // azimuth valid [-180,180)
-  wrapAngleToPlusMinus180(p_wrapped.z);  // returns (-180.180)
+  wrapAngleToPlusMinus180(p_wrapped.z);
   return p_wrapped;
 }
 
