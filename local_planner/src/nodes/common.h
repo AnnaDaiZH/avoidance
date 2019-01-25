@@ -17,6 +17,12 @@ struct PolarPoint {
   float z;
   float r;
 };
+/**
+* @brief     calculates the distance between two polar points
+* @param[in] p1 polar point
+* @param[in] p2 polar point
+* @returns   distance between the two points
+**/
 
 const double DEG_TO_RAD = M_PI / 180.f;
 /**
@@ -73,7 +79,7 @@ PolarPoint cartesianToPolar(double x, double y, double z,
 **/
 
 Eigen::Vector2i polarToHistogramIndex(const PolarPoint& p_pol, int res);
-
+PolarPoint wrapPolar(PolarPoint p_pol);
 /**
 * @brief     Compute the yaw angle between current position and point
 * @returns   angle between two points in rad
@@ -102,7 +108,11 @@ double velocityLinear(double max_vel, double slope, double v_old,
 * @param[in, out] angle to be wrapped  [rad]
 **/
 void wrapAngleToPlusMinusPI(double& angle);
-
+/**
+* @brief     wrappes the input angle in to plus minus 180 deg space
+* @param[in, out] angle to be wrapped  [deg]
+**/
+void wrapAngleToPlusMinus180(float& angle);
 /**
 * @brief     computes an angular velocity to reach the desired_yaw
 * @param[in] adesired_yaw  [rad]
